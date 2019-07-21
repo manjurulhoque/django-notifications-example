@@ -1,0 +1,39 @@
+{% extends 'app.html' %}
+{% load tz %}
+
+{% block title %} Category {% endblock %}
+
+{% block content %}
+
+    <h1>Post List</h1>
+    {% for post in posts %}
+        <article>
+            <div class="row">
+                <div class="col-sm-6 col-md-4">
+                    {% if post.photo %}
+                        <figure>
+                            <img class="img-responsive img-rounded"
+                                 src="{{ post.photo.url }}" style="height: 200px">
+                        </figure>
+                    {% endif %}
+                </div>
+                <div class="col-sm-6 col-md-8">
+                    <span class="label label-default pull-right"><i class="glyphicon glyphicon-comment"></i>50</span>
+                    <h4>{{ post.title }}</h4>
+                    <p>{{ post.text }}</p>
+                    <section>
+                        <i class="glyphicon glyphicon-folder-open"></i>{{ post.categories.all.0.name }}
+                        <i class="glyphicon glyphicon-user"></i>RaymondDragon
+                        <i class="glyphicon glyphicon-calendar"></i>
+                        {% localtime on %}
+                            {{ post.created_date|timesince }} ago
+                        {% endlocaltime %}
+                        <i class="glyphicon glyphicon-eye-open"></i>10000
+                    </section>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+
+
+{% endblock %}

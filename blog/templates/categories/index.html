@@ -1,0 +1,27 @@
+{% extends 'app.html' %}
+
+{% block title %} All Categories {% endblock %}
+
+{% block content %}
+    <h1>Category List</h1>
+    <a href="{% url 'categories.create' %}" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new categories</a>
+    <table class="table table-striped custab">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th class="text-center">Action</th>
+        </tr>
+    </thead>
+        {% for cat in categories %}
+            <tr>
+                <td>{{ cat.id }}</td>
+                <td><a href="{% url 'categories.show_post' cat.name %}">{{ cat.name }}</a></td>
+                <td class="text-center">
+                    <a class='btn btn-info btn-xs' href="{% url 'categories.edit' cat.id %}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+                    <a href="{% url 'categories.delete' cat.id %}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Del</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

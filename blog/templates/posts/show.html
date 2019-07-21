@@ -1,0 +1,69 @@
+{% extends 'app.html' %}
+{% load tz %}
+
+{% block title %} {{ post.title }} {% endblock %}
+
+{% block content %}
+
+    <article>
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                {% if post.photo %}
+                    <figure>
+                        <img style="height: 200px" class="img-responsive img-rounded"
+                             src="{{ post.photo.url }}">
+                    </figure>
+                {% endif %}
+            </div>
+            <div class="col-sm-6 col-md-8">
+                <span class="label label-default pull-right"><i class="glyphicon glyphicon-comment"></i>{{ post.comment_set.all.count }}</span>
+                <h4>{{ post.title }}</h4>
+                <p>{{ post.text }}</p>
+                <section>
+                    <i class="glyphicon glyphicon-folder-open"></i>{{ post.categories.all.0.name }}
+                    <i class="glyphicon glyphicon-user"></i>RaymondDragon
+                    <i class="glyphicon glyphicon-calendar"></i>
+                    {% localtime on %}
+                        {{ post.created_date|timesince }} ago
+                    {% endlocaltime %}
+                    <i class="glyphicon glyphicon-eye-open"></i>10000
+                </section>
+            </div>
+        </div>
+    </article>
+
+    <div class="row">
+        <div>
+            <h5>Total {{ post.comment_set.all.count }}</h5>
+            {% for comment in post.comment_set.all %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>myusername</strong> <span class="text-muted">{{ comment.created_at|timesince }} ago</span>
+                    </div>
+                    <div class="panel-body">
+                        {{ comment.text }}
+                    </div><!-- /panel-body -->
+                </div><!-- /panel panel-default -->
+            {% endfor %}
+        </div>
+    </div>
+
+    <form class="form-horizontal" action="{% url 'posts.show' post.id %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend class="text-center">Add Comment</legend>
+            <div class="form-group">
+                <label class="col-md-1 control-label" for="title">Comment*</label>
+                <div class="col-md-11">
+                    <input name="text" type="text" placeholder="Your comment" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12 text-right">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}
