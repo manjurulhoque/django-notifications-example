@@ -5,42 +5,42 @@
 
 {% block content %}
 
-    <article>
-        <div class="row">
-            <div class="col-sm-6 col-md-4">
-                {% if post.photo %}
-                    <figure>
-                        <img style="height: 200px" class="img-responsive img-rounded"
-                             src="{{ post.photo.url }}">
-                    </figure>
-                {% endif %}
-            </div>
-            <div class="col-sm-6 col-md-8">
-                <span class="label label-default pull-right"><i class="glyphicon glyphicon-comment"></i>{{ post.comment_set.all.count }}</span>
-                <h4>{{ post.title }}</h4>
-                <p>{{ post.text }}</p>
-                <section>
-                    <i class="glyphicon glyphicon-folder-open"></i>{{ post.category.name }}
-                    <i class="glyphicon glyphicon-user"></i>{{ post.user.username }}
-                    <i class="glyphicon glyphicon-calendar"></i>
-                    {% localtime on %}
-                        {{ post.created_date|timesince }} ago
-                    {% endlocaltime %}
-                    <i class="glyphicon glyphicon-eye-open"></i>10000
-                </section>
-            </div>
+    <div class="row">
+        <div class="col-sm-6 col-md-4">
+            {% if post.photo %}
+                <figure>
+                    <img style="height: 200px" class="img-responsive img-rounded"
+                         src="{{ post.photo.url }}">
+                </figure>
+            {% endif %}
         </div>
-    </article>
+        <div class="col-sm-6 col-md-8">
+            <span class="label label-default pull-right"><i
+                    class="glyphicon glyphicon-comment"></i>{{ post.comment_set.all.count }}</span>
+            <h4>{{ post.title }}</h4>
+            <p>{{ post.text }}</p>
+            <section>
+                <i class="fa fa-folder-open"></i>{{ post.category.name }}
+                <i class="fa fa-user"></i>{{ post.user.username }}
+                <i class="fa fa-calendar"></i>
+                {% localtime on %}
+                    {{ post.created_date|timesince }} ago
+                {% endlocaltime %}
+                <i class="fa fa-eye"></i>10000
+            </section>
+        </div>
+    </div>
 
     <div class="row">
-        <div>
+        <div class="col-md-12">
             <h5>Total {{ post.comment_set.all.count }}</h5>
             {% for comment in post.comment_set.all %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <strong>myusername</strong> <span class="text-muted">{{ comment.created_at|timesince }} ago</span>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>myusername</strong> <span
+                            class="text-muted">{{ comment.created_at|timesince }} ago</span>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         {{ comment.text }}
                     </div><!-- /panel-body -->
                 </div><!-- /panel panel-default -->

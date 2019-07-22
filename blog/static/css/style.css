@@ -35,6 +35,7 @@ figure img {
     min-height: 280px;
     max-height: 280px;
     overflow-y: scroll;
+    padding: 0;
 }
 
 .navbar-expand-lg .dropdown-menu.notify-drop .drop-content::-webkit-scrollbar-track {

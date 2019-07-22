@@ -4,12 +4,12 @@
 
 // (function worker() {
 //     $.ajax({
-//         url: 'http://127.0.0.1:8000/notifications/api/unread_list/',
+//         url: 'http://127.0.0.1:8000/notifications/api/all_list/',
 //         success: function (res) {
 //             console.log(res);
-//             if ($('.unread-noty').text() !== res.unread_count) {
-//                 $('.unread-noty').text(res.unread_count);
-//             }
+//             // if ($('.unread-noty').text() !== res.unread_count) {
+//             //     $('.unread-noty').text(res.unread_count);
+//             // }
 //         },
 //         complete: function () {
 //             // Schedule the next request when the current one's complete
@@ -42,10 +42,10 @@ function my_special_notification_callback(data) {
             //     message = message + " " + item.timestamp;
             // }
             if (typeof item.unread !== 'undefined' && item.unread === true) {
-                unread = 'unread';
+                unread = 'alert alert-light';
             }
-            if (typeof item.actor !== 'undefined' && item.actor.username !== 'undefined') {
-                username = item.actor.username;
+            if (typeof item.actor !== 'undefined') {
+                username = item.actor;
             }
             if (typeof item.verb !== 'undefined') {
                 verb = item.verb;
@@ -73,3 +73,9 @@ function my_special_notification_callback(data) {
         }
     }
 }
+
+$(document).ready(function () {
+    $('.mark-as-read').on('click', function () {
+
+    })
+});

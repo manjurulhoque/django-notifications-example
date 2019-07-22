@@ -25,14 +25,14 @@
                 <li class="nav-item"><a href="#" class="nav-link">Hello {{ request.user.username }}</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
-                        Notifications <span class="badge badge-pill badge-primary">{% notifications_unread %}</span>
+                        Notifications <span class="badge badge-pill badge-primary">{% live_notify_badge %}</span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu notify-drop">
                         <div class="notify-drop-title">
                             <div class="row">
                                 <div class="col-md-6 col-sm-6 col-xs-6">Notifications (<b
-                                        class="unread-noty">{% notifications_unread %}</b>)
+                                        class="unread-noty">{% live_notify_badge %}</b>)
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                                     <a href="" class="rIcon allRead" data-tooltip="tooltip" data-placement="bottom"
@@ -44,7 +44,7 @@
                         </div>
                         <!-- end notify title -->
                         <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
-                        {% register_notify_callbacks callbacks='my_special_notification_callback' %}
+                        {% register_notify_callbacks refresh_period=5 fetch=notifications_unread callbacks='my_special_notification_callback' %}
                         <script src="{% static 'js/scripts.js' %}"></script>
                         {% live_notify_list list_class="drop-content" %}
 {#                        <div class="drop-content">#}
@@ -64,7 +64,7 @@
 {#                            {% endfor %}#}
 {#                        </div>#}
                         <div class="notify-drop-footer text-center">
-                            <a href=""><i class="fa fa-eye"></i> Show all</a>
+                            <a href="{% url 'notifications:mark_all_as_read' %}" id="mark-as-read"><i class="fa fa-eye"></i> Mark all as read</a>
                         </div>
                     </ul>
                     {#                    <div class="dropdown-menu">#}
