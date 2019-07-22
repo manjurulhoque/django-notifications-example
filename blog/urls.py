@@ -1,9 +1,13 @@
 from django.conf.urls import url
+from django.urls import include
+
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+import notifications.urls
 
 urlpatterns = [
+    url('^notifications/', include(notifications.urls, namespace='notifications')),
     url(r'^$', views.index, name='posts'),
     url(r'^posts/create$', views.create_post, name='posts.create'),
     url(r'^login$', views.login_view, name='login'),

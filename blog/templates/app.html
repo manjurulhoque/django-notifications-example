@@ -1,17 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     {% include 'partials/stylesheets.html' %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    {% include 'partials/javascripts.html' %}
+    <script src="{% static 'js/scripts.js' %}"></script>
 </head>
 <body>
-    {% include 'partials/navbar.html' %}
-    <div class="container">
-        <div class="row">
-            {% block content %}{% endblock %}
-        </div>
+{% include 'partials/navbar.html' %}
+<div class="container">
+    <div class="row">
+        {% block content %}{% endblock %}
     </div>
-    {% include 'partials/javascripts.html' %}
+</div>
 </body>
 </html>

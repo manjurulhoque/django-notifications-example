@@ -9,6 +9,8 @@ from django.contrib.auth import (
 )
 from django.template.defaultfilters import slugify
 from django.views.generic import FormView, CreateView
+from notifications.models import Notification
+from notifications.signals import notify
 
 from .models import *
 from .forms import *
@@ -47,14 +49,16 @@ def create_post(request):
 
 
 def show_post(request, id):
-    if request.method == "POST":
-        text = request.POST['text']
-        post = Post.objects.get(id=id)
-        comment = Comment(text=text, post=post)
-        if comment.save():
-            post = Post.objects.get(id=id)
-            return render(request, 'posts/show.html', {'post': post})
     post = Post.objects.get(id=id)
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect("login")
+        text = request.POST['text']
+        comment = Comment(text=text, post=post)
+        notify.send(request.user, recipient=request.user, verb='commented on your post',
+                    level=Notification.LEVELS.success)
+        if comment.save():
+            return redirect('posts.show', {'id': post.id})
     return render(request, 'posts/show.html', {'post': post})
 
 
