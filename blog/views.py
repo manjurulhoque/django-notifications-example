@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import (
     authenticate,
@@ -8,9 +8,10 @@ from django.contrib.auth import (
     logout
 )
 from django.template.defaultfilters import slugify
+from django.views.generic import FormView, CreateView
 
 from .models import *
-from .forms import UserLoginForm
+from .forms import *
 
 
 # Create your views here.
@@ -30,16 +31,17 @@ def index(request):
 
 
 def create_post(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
     if request.method == "POST":
+        print(request.FILES)
         title = request.POST['title']
         text = request.POST['text']
         cat = Category.objects.get(id=int(request.POST['category_id']))
-        photo = request.FILES['image']
-        # return HttpResponse(cat)
-        post = Post(title=title, text=text, photo=photo)
+        photo = request.FILES['image'] or None
+        post = Post(title=title, text=text, photo=photo, category=cat, user=request.user)
         post.save()
-        if post.categories.add(cat):
-            return redirect('/')
+        return redirect('/')
     categories = Category.objects.all()
     return render(request, 'posts/create.html', {'categories': categories})
 
@@ -96,13 +98,95 @@ def delete_category(request, id=None):
 
 
 def signup(request):
-    return render(request, '')
+    title = "Register"
+    form = UserRegistrationForm(request.POST or None)
+    if form.is_valid():
+        user = form.save(commit=False)
+        password = form.cleaned_data.get("password1")
+        user.set_password(password)
+        print(password)
+        user.save()
+        return redirect('login')
+    return render(request, 'form.html', {'form': form, 'title': title})
 
 
 def login_view(request):
     title = "Login"
     form = UserLoginForm(request.POST or None)
     if form.is_valid():
-        username = form.cleaned_data.get("username")
-        password = form.cleaned_data.get("password")
+        login(request, form.get_user())
+        return redirect('posts')
     return render(request, 'form.html', {'form': form, "title": title})
+
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect("posts")
+    return redirect("posts")
+
+# class RegisterView(CreateView):
+#     model = User
+#     form_class = UserRegistrationForm
+#     template_name = 'form.html'
+#     success_url = '/'
+#
+#     extra_context = {
+#         'title': 'Register'
+#     }
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         if self.request.user.is_authenticated:
+#             return HttpResponseRedirect(self.get_success_url())
+#         return super().dispatch(self.request, *args, **kwargs)
+#         # return super(Login, self).dispatch(request, *args, **kwargs)
+#
+#     def get_success_url(self):
+#         return self.success_url
+#
+#     def post(self, request, *args, **kwargs):
+#         # checking for email if is already taken or not
+#         # username is by default unique
+#         if User.objects.filter(email=request.POST['email']).exists():
+#             return redirect('signup')
+#
+#         user_form = UserRegistrationForm(data=request.POST)
+#
+#         if user_form.is_valid():
+#             user = user_form.save(commit=False)
+#             print(user.password)
+#             password = user_form.cleaned_data.get("password1")
+#             user.set_password(password)
+#             user.save()
+#             return redirect('login')
+#         else:
+#             return render(request, 'form.html', {'form': user_form})
+#
+#
+# class LoginView(FormView):
+#     """
+#         Provides the ability to login as a user with a username and password
+#     """
+#     success_url = '/'
+#     form_class = UserLoginForm
+#     template_name = 'form.html'
+#
+#     extra_context = {
+#         'title': 'Login'
+#     }
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         if self.request.user.is_authenticated:
+#             return HttpResponseRedirect(self.get_success_url())
+#         return super().dispatch(self.request, *args, **kwargs)
+#
+#     def get_form_class(self):
+#         return self.form_class
+#
+#     def form_valid(self, form):
+#         login(self.request, form.get_user())
+#         return HttpResponseRedirect(self.get_success_url())
+#
+#     def form_invalid(self, form):
+#         """If the form is invalid, render the invalid form."""
+#         return self.render_to_response(self.get_context_data(form=form))

@@ -20,8 +20,8 @@
                 <h4>{{ post.title }}</h4>
                 <p>{{ post.text }}</p>
                 <section>
-                    <i class="glyphicon glyphicon-folder-open"></i>{{ post.categories.all.0.name }}
-                    <i class="glyphicon glyphicon-user"></i>RaymondDragon
+                    <i class="glyphicon glyphicon-folder-open"></i>{{ post.category.name }}
+                    <i class="glyphicon glyphicon-user"></i>{{ post.user.username }}
                     <i class="glyphicon glyphicon-calendar"></i>
                     {% localtime on %}
                         {{ post.created_date|timesince }} ago

@@ -1,8 +1,29 @@
-from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
-# Create your models here.
+class User(AbstractUser):
+    username = models.CharField(
+        'username',
+        max_length=20,
+        unique=True,
+        help_text='Required. 20 characters or fewer. Letters, digits and @/./+/-/_ only.',
+        error_messages={
+            'unique': "A user with that username already exists.",
+        },
+    )
+    email = models.EmailField(unique=True, blank=False,
+                              error_messages={
+                                  'unique': "A user with that email already exists.",
+                              })
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
+
+    def __unicode__(self):
+        return self.email
+
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -20,8 +41,8 @@ class Tag(models.Model):
 
 class Post(models.Model):
     # tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(Category)
-    # comment = models.ForeignKey(Comment, on_delete=models.CASCADE, default=0)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = models.TextField()
     photo = models.ImageField(upload_to='photo', blank=True)
