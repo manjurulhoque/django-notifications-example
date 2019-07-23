@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import (
     authenticate,
@@ -40,8 +39,7 @@ def create_post(request):
         title = request.POST['title']
         text = request.POST['text']
         cat = Category.objects.get(id=int(request.POST['category_id']))
-        photo = request.FILES['image'] or None
-        post = Post(title=title, text=text, photo=photo, category=cat, user=request.user)
+        post = Post(title=title, text=text, category=cat, user=request.user)
         post.save()
         return redirect('/')
     categories = Category.objects.all()
@@ -55,8 +53,10 @@ def show_post(request, id):
             return redirect("login")
         text = request.POST['text']
         comment = Comment(text=text, post=post)
-        notify.send(request.user, recipient=request.user, verb='commented on your post',
-                    level=Notification.LEVELS.success)
+        recipient = post.user
+        if recipient != request.user:
+            notify.send(request.user, recipient=recipient, verb='commented on your post',
+                        level=Notification.LEVELS.success)
         if comment.save():
             return redirect('posts.show', {'id': post.id})
     return render(request, 'posts/show.html', {'post': post})

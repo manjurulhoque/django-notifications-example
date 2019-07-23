@@ -44,7 +44,7 @@
                         </div>
                         <!-- end notify title -->
                         <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
-                        {% register_notify_callbacks refresh_period=5 fetch=notifications_unread callbacks='my_special_notification_callback' %}
+                        {% register_notify_callbacks refresh_period=15 fetch=notifications_unread callbacks='fill_notification_badge,my_special_notification_callback' %}
                         <script src="{% static 'js/scripts.js' %}"></script>
                         {% live_notify_list list_class="drop-content" %}
 {#                        <div class="drop-content">#}

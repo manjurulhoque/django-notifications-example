@@ -21,8 +21,11 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
+    def __str__(self):
+        return self.username
+
     def __unicode__(self):
-        return self.email
+        return self.username
 
 
 class Category(models.Model):
@@ -45,7 +48,6 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = models.TextField()
-    photo = models.ImageField(upload_to='photo', blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
 
